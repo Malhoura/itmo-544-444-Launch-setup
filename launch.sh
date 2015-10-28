@@ -23,3 +23,6 @@ aws elb configure-health-check --load-balancer-name $2 --health-check Target=HTT
 
 #launch configuration
 aws autoscaling create-launch-configuration --launch-configuration-name itmo-544-444-launch-config --image-id ami-d05e75b8 --key-name itmo-444-virtualbox --security-groups sg-37695650 --instance-type t2.micro --user-data file://itmo-544-444-Environment-setup/install-env.sh --iam-instance-profile Mazen-AlHourani
+
+#create autoscaling group
+aws autoscaling create-auto-scaling-group --auto-scaling-group-name itmo-544-444-autoscaling-group --launch-configuration-name itmo-544-444-launch-config --load-balancer-names $2 --health-check-type ELB --min-size 3 --max-size 6 desired-capacity 3 --default-cooldown 600 --health-check-grace-period 120 --vpc-zone-identifier subnet-7f4e4708 
