@@ -17,3 +17,6 @@ aws elb register-instances-with-load-balancer --load-balancer-name $2 --instance
 
 #health check
 aws elb configure-health-check --load-balancer-name $2 --health-check Target=HTTP:80/index.html,interval=30,unhealthyThreshold=2,HealthyThreshold=2,Timeout=3
+
+#launch configuration
+aws autoscaling create-launch-configuration --launch-configuration-name itmo-544-444-launch-config --image-id ami-d05e75b8 --key-name itmo-444-virtualbox --security-groups sg-37695650 --instance-type t2.micro --user-data file://itmo-544-444-Environment-setup/install-env.sh --iam-instance-profile Mazen-AlHourani
