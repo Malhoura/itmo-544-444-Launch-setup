@@ -9,5 +9,7 @@ aws ec2 wait instance-running --instance-ids ${myInsARRAY[@]}
 echo "instances are running"
 
 #create load balancer
-ELBURL=('aws elb create-load-balancer --load-balancer-name $2 --listeners Protocol=HTTP,LoadBalancerPort=80,InstanceProtocol=HTTP,output=text'); 
-echo $ELBURL 
+ELBURL=('aws elb create-load-balancer --load-balancer-name $2 --listeners Protocol=HTTP,LoadBalancerPort=80,InstanceProtocol=HTTP,InstancePort=80 --security-groups sg-37695650 --subnets subnet-7f4e4708 --output=text'); 
+echo $ELBURL
+
+#regiter load balancer 
