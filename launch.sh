@@ -12,4 +12,8 @@ echo "instances are running"
 ELBURL=('aws elb create-load-balancer --load-balancer-name $2 --listeners Protocol=HTTP,LoadBalancerPort=80,InstanceProtocol=HTTP,InstancePort=80 --security-groups sg-37695650 --subnets subnet-7f4e4708 --output=text'); 
 echo $ELBURL
 
-#regiter load balancer 
+#regiter load balancer
+aws elb register-instances-with-load-balancer --load-balancer-name $2 --instances ${MyInsARRAY[@]}
+
+#health check
+aws elb configure-health-check --load-balancer-name $2 --health-check Target=HTTP:80/index.html,interval=30,unhealthyThreshold=2,HealthyThreshold=2,Timeout=3
