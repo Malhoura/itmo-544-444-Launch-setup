@@ -21,7 +21,7 @@ echo $ELBURL
 aws elb register-instances-with-load-balancer --load-balancer-name mazen-load-balancer --instances ${MyInsARRAY[@]}
 
 #health check
-#aws elb configure-health-check --load-balancer-name mazen-load-balancer --health-check Target=HTTP:80/index.html,interval=50,unhealthyThreshold=3,HealthyThreshold=3,Timeout=4 
+aws elb configure-health-check --load-balancer-name mazen-load-balancer --health-check Target=HTTP:80/index.html,Interval=50,UnhealthyThreshold=3,HealthyThreshold=3,Timeout=4 
 
 #launch configuration
 aws autoscaling create-launch-configuration --launch-configuration-name itmo-544-444-launch-config --image-id ami-d05e75b8 --key-name itmo-444-virtualbox --security-groups sg-37695650 --instance-type t2.micro --user-data file://install-env.sh --iam-instance-profile phpRole 
