@@ -28,3 +28,8 @@ aws autoscaling create-launch-configuration --launch-configuration-name itmo-544
 
 #create autoscaling group
 aws autoscaling create-auto-scaling-group --auto-scaling-group-name itmo-544-444-autoscaling-group --launch-configuration-name itmo-544-444-launch-config --load-balancer-names $2 --health-check-type ELB --min-size 3 --max-size 6 --desired-capacity 3 --default-cooldown 600 --health-check-grace-period 120 --vpc-zone-identifier subnet-7f4e4708 
+
+#create database subnet groups
+create-db-subnet-group --db-subnet-group-name malhoura-mp1 --db-subnet-group-discreption "group for mp1" --subnet-ids subnet-7f4e4708 subnet-afa282f6
+
+aws rds create-db-instance --db-instance-identifier mp1-malhoura --db-instance-class db.t1.micro --engine MySQL --master-username malhoura --master-user-password malhoura --allocated-storage 10 --db-subnet-group-name malhoura-mp1 
