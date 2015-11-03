@@ -61,10 +61,10 @@ aws autoscaling delete-auto-scaling-group --auto-scaling-group-name $SCALENAME
 
 aws autoscaling delete-launch-configuration --launch-configuration-name $LAUNCHCONF
 
-aws autoscaling update-auto-scaling-group --auto-scaling-group-name $SCALENAME --min-size 0 --max-size 0
+#aws autoscaling update-auto-scaling-group --auto-scaling-group-name $SCALENAME --min-size 0 --max-size 0
 
 aws autoscaling delete-auto-scaling-group --auto-scaling-group-name $SCALENAME
-aws autoscaling delete-launch-configuration --launch-configuration-name $LAUNCHCONF
+#aws autoscaling delete-launch-configuration --launch-configuration-name $LAUNCHCONF
 fi
 
 
