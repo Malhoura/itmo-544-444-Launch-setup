@@ -32,4 +32,4 @@ aws autoscaling create-auto-scaling-group --auto-scaling-group-name itmo-544-444
 #create database subnet groups
 create-db-subnet-group --db-subnet-group-name malhoura-mp1 --db-subnet-group-discreption "group for mp1" --subnet-ids subnet-7f4e4708 
 
-aws rds create-db-instance --db-instance-identifier mp1-malhoura --db-instance-class db.t1.micro --engine MySQL --master-username malhoura --master-user-password malhoura --allocated-storage 10 --db-subnet-group-name malhoura-mp1 
+aws rds create-db-instance --db-instance-identifier malhoura-mp1 --db-instance-class db.t1.micro --engine MySQL --master-username malhoura --master-user-password malhoura --allocated-storage 10 --db-subnet-group-name malhoura-mp1 
