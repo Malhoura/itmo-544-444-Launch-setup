@@ -33,3 +33,5 @@ aws autoscaling create-auto-scaling-group --auto-scaling-group-name itmo-544-444
 aws rds create-db-subnet-group --db-subnet-group-name mp1 --db-subnet-group-discreption "group for mp1" --subnet-ids subnet-7f4e4708 subnet-afa282f6 
 
 aws rds create-db-instance --db-instance-identifier malhoura-mp1 --db-instance-class db.t1.micro --engine MySQL --master-username malhoura --master-user-password malhoura --allocated-storage 10 --db-subnet-group-name mp1 
+
+php ./setup.php
