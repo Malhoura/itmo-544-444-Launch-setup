@@ -38,7 +38,7 @@ if [ ${#dbInstanceARR[@]} -gt 0 ]
       for (( i=0; i<${LENGTH}; i++));
       do 
       aws rds delete-db-instance --db-instance-identifier ${dbInstanceARR[i]} --skip-final-snapshot --output text
-      aws rds wait db-instance-deleted --db-instance-identifier ${dbInstanceARR[i]} --output text
+    sudo aws rds wait db-instance-deleted --db-instance-identifier ${dbInstanceARR[i]} --output text
       sleep 1
    done
 fi
@@ -57,14 +57,14 @@ if [ ${#SCALENAME[@]} -gt 0 ]
 echo "SCALING GROUPS to delete..."
 #aws autoscaling detach-launch-
 
-#aws autoscaling delete-auto-scaling-group --auto-scaling-group-name $SCALENAME
+aws autoscaling delete-auto-scaling-group --auto-scaling-group-name $SCALENAME
 
-#aws autoscaling delete-launch-configuration --launch-configuration-name $LAUNCHCONF
+aws autoscaling delete-launch-configuration --launch-configuration-name $LAUNCHCONF
 
 #aws autoscaling update-auto-scaling-group --auto-scaling-group-name $SCALENAME --min-size 0 --max-size 0
 
-#aws autoscaling delete-auto-scaling-group --auto-scaling-group-name $SCALENAME
-#aws autoscaling delete-launch-configuration --launch-configuration-name $LAUNCHCONF
+aws autoscaling delete-auto-scaling-group --auto-scaling-group-name $SCALENAME
+aws autoscaling delete-launch-configuration --launch-configuration-name $LAUNCHCONF
 fi
 
 
