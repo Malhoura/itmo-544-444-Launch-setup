@@ -10,7 +10,7 @@ mapfile -t myInsARRAY < <(aws ec2 run-instances --image-id ami-d05e75b8 --count 
 echo ${myInsARRAY[@]}
 
 #wait until instances are launched to proceed 
-aws ec2 wait instance-running --instance-ids ${myInsARRAY[@]}
+sudo aws ec2 wait instance-running --instance-ids ${myInsARRAY[@]}
 echo "instances are running"
 
 #create load balancer
@@ -27,13 +27,13 @@ aws elb configure-health-check --load-balancer-name $2 --health-check Target=HTT
 aws autoscaling create-launch-configuration --launch-configuration-name itmo-544-444-launch-config --image-id ami-d05e75b8 --key-name itmo-444-virtualbox --security-groups sg-37695650 --instance-type t2.micro --user-data file://install-webserver.sh --iam-instance-profile phpRole 
 
 #create autoscaling group
-aws autoscaling create-auto-scaling-group --auto-scaling-group-name itmo-544-444-autoscaling-group --launch-configuration-name itmo-544-444-launch-config --load-balancer-names $2 --health-check-type ELB --min-size 3 --max-size 6 --desired-capacity 3 --default-cooldown 600 --health-check-grace-period 120 --vpc-zone-identifier subnet-7f4e4708 
+aws autoscaling create-auto-scaling-group --auto-scaling-group-name itmo-544-444-autoscaling-group --launch-configuration-name itmo-544-444-launch-config --load-balancer-names $2 --health-check-type ELB --min-size 3 --max-size 6 --desired-capacity 4 --default-cooldown 600 --health-check-grace-period 120 --vpc-zone-identifier subnet-7f4e4708 
 
 #create database subnet groups
-aws rds create-db-subnet-group --db-subnet-group-name mp1 --db-subnet-group-discreption "group for mp1" --subnet-ids subnet-7f4e4708 subnet-afa282f6 
+sudo aws rds create-db-subnet-group --db-subnet-group-name mp1 --db-subnet-group-description "group for mp1" --subnet-ids subnet-7f4e4708 subnet-afa282f6  
 
 
-aws rds create-db-instance --db-instance-identifier malhoura-mp1 --db-instance-class db.t1.micro --engine MySQL --master-username malhoura --master-user-password malhoura --allocated-storage 10 --db-subnet-group-name mp1 
+sudo aws rds create-db-instance --db-instance-identifier malhoura-mp1 --db-instance-class db.t1.micro --engine MySQL --master-username malhoura --master-user-password malhoura --allocated-storage 5 --vpc-security-group-ids sg-37695650 --db-subnet-group-name ITMO444 sg-37695650 --db-subnet-group-name mp1 
 
-aws rds wait db-instance-available --db-instance-identifier malhoura-mp1 
+sudo aws rds wait db-instance-available --db-instance-identifier malhoura-mp1 
 #php ../itmo-544-444-Application-setup/setup.php
