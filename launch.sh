@@ -37,6 +37,16 @@ aws autoscaling create-launch-configuration --launch-configuration-name itmo-544
 #create autoscaling group
 aws autoscaling create-auto-scaling-group --auto-scaling-group-name itmo-544-444-autoscaling-group --launch-configuration-name itmo-544-444-launch-config --load-balancer-names $2 --health-check-type ELB --min-size 3 --max-size 6 --desired-capacity 3 --default-cooldown 600 --health-check-grace-period 120 --vpc-zone-identifier subnet-afa282f6 
 
+#cloud watch matrix
+
+PolicyARN1=(`aws autoscaling put-scaling-policy --policy-name policy-1 --auto-scaling-group-name itmo-544-444-autoscaling-group --scaling-adjustment 1 --adjustment-type ChangeInCapacity`);
+
+PolicyARN2=(`aws autoscaling put-scaling-policy --policy-name policy-2 --auto-scaling-group-name itmo-544-444-autoscaling-group --scaling-adjustment 1 --adjustment-type ChangeInCapacity`);
+
+aws cloudwatch put-metric-alarm --alarm-name AddCapacity --metric-name CPUUtilization --namespace AWS/EC2 --statistic Average --period 120 --threshold 30 --comparison-operator GreaterThanOrEqualToThreshold --dimensions "Name=AutoScalingGroupName,Value=itmo-544-444-autoscaling-group" --evaluation-periods 2 --alarm-actions $PolicyARN1
+
+aws cloudwatch put-metric-alarm --alarm-name RemoveCapacity --metric-name CPUUtilization --namespace AWS/EC2 --statistic Average --period 120 --threshold 10 --comparison-operator LessThanOrEqualToThreshold --dimensions "Name=AutoScalingGroupName,Value=itmo-544-444-autoscaling-group" --evaluation-periods 2 --alarm-actions $PolicyARN2
+
 #create database subnet groups
 sudo aws rds create-db-subnet-group --db-subnet-group-name ITMO444 --db-subnet-group-description "group for mp1" --subnet-ids subnet-7f4e4708 subnet-afa282f6  
 
