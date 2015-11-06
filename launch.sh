@@ -10,7 +10,7 @@ mapfile -t myInsARRAY < <(aws ec2 run-instances --image-id ami-d05e75b8 --count 
 echo ${myInsARRAY[@]}
 
 #wait until instances are launched to proceed 
-sudo aws ec2 wait instance-running --instance-ids ${myInsARRAY[@]}
+aws ec2 wait instance-running --instance-ids ${myInsARRAY[@]}
 echo "instances are running"
 
 #create load balancer
@@ -48,10 +48,13 @@ aws cloudwatch put-metric-alarm --alarm-name AddCapacity --metric-name CPUUtiliz
 aws cloudwatch put-metric-alarm --alarm-name RemoveCapacity --metric-name CPUUtilization --namespace AWS/EC2 --statistic Average --period 120 --threshold 10 --comparison-operator LessThanOrEqualToThreshold --dimensions "Name=AutoScalingGroupName,Value=itmo-544-444-autoscaling-group" --evaluation-periods 2 --alarm-actions $PolicyARN2
 
 #create database subnet groups
-sudo aws rds create-db-subnet-group --db-subnet-group-name ITMO444 --db-subnet-group-description "group for mp1" --subnet-ids subnet-7f4e4708 subnet-afa282f6  
+if[ "$3" == "itmo444" ]; then
+echo "db-subnet-group-name already exists"
+else
+aws rds create-db-subnet-group --db-subnet-group-name $3 --db-subnet-group-description "group for mp1" --subnet-ids subnet-7f4e4708 subnet-afa282f6  
+fi
 
-
-sudo aws rds create-db-instance --db-name users --db-instance-identifier malhoura-mp1 --db-instance-class db.t2.micro --engine MySQL --master-username malhoura --master-user-password malhoura --allocated-storage 10 --vpc-security-group-ids sg-37695650 --db-subnet-group-name ITMO444 --publicly-accessible 
+#aws rds create-db-instance --db-name users --db-instance-identifier malhoura-mp1 --db-#instance-class db.t2.micro --engine MySQL --master-username malhoura --master-user-password#malhoura --allocated-storage 10 --vpc-security-group-ids sg-37695650 --db-subnet-group-name#$3 --publicly-accessible 
 
 aws rds wait db-instance-available --db-instance-identifier malhoura-mp1 
-#php ../itmo-544-444-Application-setup/setup.php
+php ../itmo-544-444-Application-setup/setup.php
