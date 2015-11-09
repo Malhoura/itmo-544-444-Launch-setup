@@ -34,7 +34,7 @@ if [ ${#dbInstanceARR[@]} -gt 0 ]
    echo "Deleting existing RDS database-instances"
    LENGTH=${#dbInstanceARR[@]}  
 
-    http://docs.aws.amazon.com/cli/latest/reference/rds/wait/db-instance-deleted.html
+#http://docs.aws.amazon.com/cli/latest/reference/rds/wait/db-instance-deleted.html
       for (( i=0; i<${LENGTH}; i++));
       do 
       aws rds delete-db-instance --db-instance-identifier ${dbInstanceARR[i]} --skip-final-snapshot --output text
