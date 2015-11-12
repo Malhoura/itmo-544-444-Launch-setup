@@ -52,4 +52,4 @@ aws rds create-db-subnet-group --db-subnet-group-name itmo444 --db-subnet-group-
 aws rds create-db-instance --db-name users --db-instance-identifier malhoura-mp1 --db-instance-class db.t2.micro --engine MySQL --master-username malhoura --master-user-password malhoura --allocated-storage 10 --vpc-security-group-ids $5 --db-subnet-group-name itmo444 --publicly-accessible 
 
 aws rds wait db-instance-available --db-instance-identifier malhoura-mp1 
-php ../itmo-544-444-Application-setup/setup.php
+#php ../itmo-544-444-Application-setup/setup.php
