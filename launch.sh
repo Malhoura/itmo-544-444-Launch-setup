@@ -34,17 +34,16 @@ aws elb configure-health-check --load-balancer-name $3 --health-check Target=HTT
 #launch configuration
 aws autoscaling create-launch-configuration --launch-configuration-name malhoura-launch-config --image-id ami-d05e75b8 --key-name $2 --security-groups sg-37695650 -instance-type t2.micro --user-data file://install-webserver.sh --iam-instance-profile phpRole 
 
+for i in {0..15};do echo -ne '.';sleep 1;done
+
+echo -e "\n"
+
 #create autoscaling group"
 aws autoscaling create-auto-scaling-group --auto-scaling-group-name malhoura-auto-scaling --launch-configuration-name malhoura-launch-config --load-balancer-names $3 --health-check-type ELB --min-size 3 --max-size 6 --desired-capacity 3 --default-cooldown 600 --health-check-grace-period 120 --vpc-zone-identifier subnet-afa282f6 
 
 #cloud watch matrix
-ARRAY1=(`aws autoscaling put-scaling-policy --policy-name policy-1 --auto-scaling-group-name malhoura-auto-scaling --scaling-adjustment 1 --adjustment-type ChangeInCapacity`);
 
-ARRAY2=(`aws autoscaling put-scaling-policy --policy-name policy-2 --auto-scaling-group-name malhoura-auto-scaling --scaling-adjustment 1 --adjustment-type ChangeInCapacity`);
 
-aws cloudwatch put-metric-alarm --alarm-name AddCapacity --metric-name CPUUtilization --namespace AWS/EC2 --statistic Average --period 120 --threshold 30 --comparison-operator GreaterThanOrEqualToThreshold --dimensions "Name=AutoScalingGroupName,Value=malhoura-auto-scaling" --evaluation-periods 2 --alarm-actions $ARRAY1
-
-aws cloudwatch put-metric-alarm --alarm-name RemoveCapacity --metric-name CPUUtilization --namespace AWS/EC2 --statistic Average --period 120 --threshold 10 --comparison-operator LessThanOrEqualToThreshold --dimensions "Name=AutoScalingGroupName,Value=malhoura-auto-scaling" --evaluation-periods 2 --alarm-actions $ARRAY2
 
 #create database subnet groups
 aws rds create-db-subnet-group --db-subnet-group-name itmo444 --db-subnet-group-description "group for mp1" --subnet-ids subnet-7f4e4708 subnet-afa282f6  
