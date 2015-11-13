@@ -34,7 +34,7 @@ aws elb configure-health-check --load-balancer-name $3 --health-check Target=HTT
 #launch configuration
 aws autoscaling create-launch-configuration --launch-configuration-name malhoura-launch-config --image-id ami-d05e75b8 --key-name $2 --security-groups sg-37695650 -instance-type t2.micro --user-data file://install-webserver.sh --iam-instance-profile phpRole 
 
-for i in {0..15};do echo -ne '.';sleep 1;done
+for i in {0..60};do echo -ne '.';sleep 1;done
 
 echo -e "\n"
 
