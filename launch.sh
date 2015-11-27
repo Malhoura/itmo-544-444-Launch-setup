@@ -2,7 +2,7 @@
 
 
 #create database subnet groups
-#this command might not be important
+#this command is enough to excuted once 
 #aws rds create-db-subnet-group --db-subnet-group-name itmo444 --db-subnet-group-description "group for mp1" --subnet-ids subnet-7f4e4708 subnet-afa282f6
 
 #aws rds create-db-instance --db-name malhouradb --db-instance-identifier malhoura-mp1 --db-instance-class db.t2.micro --engine MySQL --master-username malhoura --master-user-password malhoura --allocated-storage 10 --vpc-security-group-ids sg-37695650 --db-subnet-group-name itmo444 --publicly-accessible
@@ -40,11 +40,13 @@ aws elb register-instances-with-load-balancer --load-balancer-name $3 --instance
 #health check
 aws elb configure-health-check --load-balancer-name $3 --health-check Target=HTTP:80/index.php,Interval=30,UnhealthyThreshold=2,HealthyThreshold=2,Timeout=3 
 
+#create cookie stickiness policy
+aws elb create-lb-cookie-stickiness-policy --load-balancer-name $3 --policy-name stickypolicy --cookie-expiration-period 60 
+
+aws elb set-load-balancer-policies-of-listener --load-balancer-name $3 --load-balancer-port 80 --policy-names stickypolicy
+
 #launch configuration
 aws autoscaling create-launch-configuration --launch-configuration-name malhoura-launch-config --image-id ami-d05e75b8 --key-name $2 --security-groups sg-37695650 --instance-type t2.micro --user-data file://install-webserver.sh --iam-instance-profile phpRole 
-
-#create autoscaling group
-aws autoscaling create-auto-scaling-group --auto-scaling-group-name malhoura-auto-scaling --launch-configuration-name malhoura-launch-config --load-balancer-names $3 --health-check-type ELB --min-size 3 --max-size 6 --desired-capacity 3 --default-cooldown 600 --health-check-grace-period 120 --vpc-zone-identifier subnet-afa282f6
 
 
 #cloud watch matrix
@@ -52,7 +54,11 @@ aws cloudwatch put-metric-alarm --alarm-name ScaleUp --alarm-description "ScaleU
 
 aws cloudwatch put-metric-alarm --alarm-name ScaleDown --alarm-description "ScaleDown when CPU <= 10 " --metric-name CPUUtilization --namespace AWS/EC2 --statistic Average --period 300 --threshold 10 --comparison-operator LessThanThreshold --evaluation-periods 2 --unit Percent
 
+#create autoscaling group
+aws autoscaling create-auto-scaling-group --auto-scaling-group-name malhoura-auto-scaling --launch-configuration-name malhoura-launch-config --load-balancer-names $3 --health-check-type ELB --min-size 3 --max-size 6 --desired-capacity 3 --default-cooldown 600 --health-check-grace-period 120 --vpc-zone-identifier subnet-afa282f6
+
 #create sns topic
-SNSARN =(`aws sns create-topic --name mp2`)
+SNSARN=(`aws sns create-topic --name mp2`)
+echo "this is the ARN: $SNSARN" 
 aws sns set-topic-attributes --topic-arn $SNSARN --attribute-name DisplayName --attribute-value mp2
 aws sns subscribe --topic-arn $SNSARN --protocol sms --notification-endpoint 13128885475 
