@@ -58,7 +58,7 @@ aws cloudwatch put-metric-alarm --alarm-name ScaleDown --alarm-description "Scal
 aws autoscaling create-auto-scaling-group --auto-scaling-group-name malhoura-auto-scaling --launch-configuration-name malhoura-launch-config --load-balancer-names $3 --health-check-type ELB --min-size 3 --max-size 6 --desired-capacity 3 --default-cooldown 600 --health-check-grace-period 120 --vpc-zone-identifier subnet-afa282f6
 
 #create sns topic
-SNSARN=(`aws sns create-topic --name mp2`)
-echo "this is the ARN: $SNSARN" 
-aws sns set-topic-attributes --topic-arn $SNSARN --attribute-name DisplayName --attribute-value mp2
-aws sns subscribe --topic-arn $SNSARN --protocol sms --notification-endpoint 13128885475 
+#SNSARN=(`aws sns create-topic --name mp2`)
+#echo "this is the ARN: $SNSARN" 
+#aws sns set-topic-attributes --topic-arn $SNSARN --attribute-name DisplayName --attribute-value mp2
+#aws sns subscribe --topic-arn $SNSARN --protocol sms --notification-endpoint 13128885475 

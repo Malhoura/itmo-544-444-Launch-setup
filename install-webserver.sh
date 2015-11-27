@@ -1,7 +1,7 @@
 #!/bin/bash
 
 sudo apt-get update -y
-sudo apt-get install -y apache2 git php5 mysql-client curl php5-mysql php5-imagick
+sudo apt-get install -y apache2 git php5 mysql-client curl php5-mysqlnd php5-imagick
 git clone https://github.com/Malhoura/itmo-544-444-Application-setup.git
 mv ./itmo-544-444-Application-setup/images /var/www/html/images
 mv ./itmo-544-444-Application-setup/index.html /var/www/html

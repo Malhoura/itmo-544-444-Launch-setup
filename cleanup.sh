@@ -11,6 +11,7 @@ mapfile -t cleanupARR < <(aws ec2 describe-instances --filter Name=instance-stat
 echo "the output is ${cleanupARR[@]}"
 
 aws ec2 terminate-instances --instance-ids ${cleanupARR[@]} 
+aws ec2 wait instance-terminated --instance-ids ${cleanupARR[@]}
 
 echo "Cleaning up existing Load Balancers"
 mapfile -t cleanupLBARR < <(aws elb describe-load-balancers --output json | grep LoadBalancerName | sed "s/[\"\:\, ]//g" | sed "s/LoadBalancerName//g")
@@ -41,6 +42,10 @@ done
 #      sleep 1
 #   done
 #fi
+
+
+
+
 
 # Create Launchconf and Autoscaling groups
 
