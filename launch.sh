@@ -13,7 +13,7 @@
 
 #declaring an array in bash
 declare -a myInsARRAY
-mapfile -t myInsARRAY < <(aws ec2 run-instances --image-id ami-d05e75b8 --count $1 --instance-type t2.micro --key-name $2 --security-group-ids sg-37695650 --subnet-id subnet-afa282f6 --associate-public-ip-address --iam-instance-profile Name=phpRole --user-data file://install-webserver.sh --output table | grep InstanceId | sed "s/|//g" | tr -d ' ' | sed "s/InstanceId//g")
+mapfile -t myInsARRAY < <(aws ec2 run-instances --image-id $1 --count $2 --instance-type $3 --key-name $4 --security-group-ids $5 --subnet-id $6 --associate-public-ip-address --iam-instance-profile Name=$7 --user-data file://install-webserver.sh --output table | grep InstanceId | sed "s/|//g" | tr -d ' ' | sed "s/InstanceId//g")
 
 #Displaying the created array contents
 echo ${myInsARRAY[@]}
@@ -23,7 +23,7 @@ aws ec2 wait instance-running --instance-ids ${myInsARRAY[@]}
 echo "instances are running"
 
 #create load balancer
-aws elb create-load-balancer --load-balancer-name $3 --listeners Protocol=HTTP,LoadBalancerPort=80,InstanceProtocol=HTTP,InstancePort=80 --security-groups sg-37695650 --subnets subnet-afa282f6 
+aws elb create-load-balancer --load-balancer-name mazen-lb --listeners Protocol=HTTP,LoadBalancerPort=80,InstanceProtocol=HTTP,InstancePort=80 --security-groups sg-37695650 --subnets subnet-afa282f6 
 echo $3
 
 echo -e "\nFinished launching ELB and waiting 25 seconds"
@@ -35,18 +35,18 @@ for i in {0..25};do echo -ne '.';sleep 1;done
 echo -e "\n"
 
 #regiter load balancer
-aws elb register-instances-with-load-balancer --load-balancer-name $3 --instances ${MyInsARRAY[@]}
+aws elb register-instances-with-load-balancer --load-balancer-name mazen-lb --instances ${MyInsARRAY[@]}
 
 #health check
-aws elb configure-health-check --load-balancer-name $3 --health-check Target=HTTP:80/index.php,Interval=30,UnhealthyThreshold=2,HealthyThreshold=2,Timeout=3 
+aws elb configure-health-check --load-balancer-name mazen-lb --health-check Target=HTTP:80/index.php,Interval=30,UnhealthyThreshold=2,HealthyThreshold=2,Timeout=3 
 
 #create cookie stickiness policy
-aws elb create-lb-cookie-stickiness-policy --load-balancer-name $3 --policy-name stickypolicy --cookie-expiration-period 60 
+aws elb create-lb-cookie-stickiness-policy --load-balancer-name mazen-lb --policy-name stickypolicy --cookie-expiration-period 60 
 
-aws elb set-load-balancer-policies-of-listener --load-balancer-name $3 --load-balancer-port 80 --policy-names stickypolicy
+aws elb set-load-balancer-policies-of-listener --load-balancer-name mazen-lb --load-balancer-port 80 --policy-names stickypolicy
 
 #launch configuration
-aws autoscaling create-launch-configuration --launch-configuration-name malhoura-launch-config --image-id ami-d05e75b8 --key-name $2 --security-groups sg-37695650 --instance-type t2.micro --user-data file://install-webserver.sh --iam-instance-profile phpRole 
+aws autoscaling create-launch-configuration --launch-configuration-name malhoura-launch-config --image-id $1 --key-name $4 --security-groups $5 --instance-type $3 --user-data file://install-webserver.sh --iam-instance-profile $7 
 
 
 #cloud watch matrix
@@ -55,10 +55,4 @@ aws cloudwatch put-metric-alarm --alarm-name ScaleUp --alarm-description "ScaleU
 aws cloudwatch put-metric-alarm --alarm-name ScaleDown --alarm-description "ScaleDown when CPU <= 10 " --metric-name CPUUtilization --namespace AWS/EC2 --statistic Average --period 300 --threshold 10 --comparison-operator LessThanThreshold --evaluation-periods 2 --unit Percent
 
 #create autoscaling group
-aws autoscaling create-auto-scaling-group --auto-scaling-group-name malhoura-auto-scaling --launch-configuration-name malhoura-launch-config --load-balancer-names $3 --health-check-type ELB --min-size 3 --max-size 6 --desired-capacity 3 --default-cooldown 600 --health-check-grace-period 120 --vpc-zone-identifier subnet-afa282f6
-
-#create sns topic
-#SNSARN=(`aws sns create-topic --name mp2`)
-#echo "this is the ARN: $SNSARN" 
-#aws sns set-topic-attributes --topic-arn $SNSARN --attribute-name DisplayName --attribute-value mp2
-#aws sns subscribe --topic-arn $SNSARN --protocol sms --notification-endpoint 13128885475 
+aws autoscaling create-auto-scaling-group --auto-scaling-group-name malhoura-auto-scaling --launch-configuration-name malhoura-launch-config --load-balancer-names mazen-lb --health-check-type ELB --min-size 3 --max-size 6 --desired-capacity 3 --default-cooldown 600 --health-check-grace-period 120 --vpc-zone-identifier subnet-afa282f6
