@@ -8,6 +8,7 @@ mv ./itmo-544-444-Application-setup/index.html /var/www/html
 mv ./itmo-544-444-Application-setup/*.php /var/www/html
 curl -sS https://getcomposer.org/installer | sudo php &> /tmp/getcomposer.txt
 sudo php composer.phar require aws/aws-sdk-php &> /tmp/runcomposer.txt
+cd -R vendor/ /var/www/html
 sudo mv vendor /var/www/html &> /tmpruncomposer.txt
 sudo php /var/www/html/setup.php &> /tmp/database-setup.txt
 chmod 600 /var/www/html/setup.php
