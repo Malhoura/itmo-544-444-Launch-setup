@@ -13,7 +13,7 @@
 
 #declaring an array in bash
 declare -a myInsARRAY
-mapfile -t myInsARRAY < <(aws ec2 run-instances --image-id $1 --count $2 --instance-type $3 --key-name $4 --security-group-ids $5 --subnet-id $6 --associate-public-ip-address --iam-instance-profile Name=$7 --user-data file://install-webserver.sh --output table | grep InstanceId | sed "s/|//g" | tr -d ' ' | sed "s/InstanceId//g")
+mapfile -t myInsARRAY < <(aws ec2 run-instances --image-id $1 --count $2 --instance-type $3 --key-name $4 --security-group-ids $5 --subnet-id $6 --associate-public-ip-address --iam-instance-profile Name=$7 --user-data file:// ../Documents/itmo-544-444-Launch-setup/install-webserver.sh --output table | grep InstanceId | sed "s/|//g" | tr -d ' ' | sed "s/InstanceId//g")
 
 #Displaying the created array contents
 echo ${myInsARRAY[@]}
@@ -46,7 +46,7 @@ aws elb create-lb-cookie-stickiness-policy --load-balancer-name mazen-lb --polic
 aws elb set-load-balancer-policies-of-listener --load-balancer-name mazen-lb --load-balancer-port 80 --policy-names stickypolicy
 
 #launch configuration
-aws autoscaling create-launch-configuration --launch-configuration-name malhoura-launch-config --image-id $1 --key-name $4 --security-groups $5 --instance-type $3 --user-data file:// ../itmo-544-444-Launch-setup/install-webserver.sh --iam-instance-profile $7 
+aws autoscaling create-launch-configuration --launch-configuration-name malhoura-launch-config --image-id $1 --key-name $4 --security-groups $5 --instance-type $3 --user-data file:// ../Documents/itmo-544-444-Launch-setup/install-webserver.sh --iam-instance-profile $7 
 
 
 #cloud watch matrix
