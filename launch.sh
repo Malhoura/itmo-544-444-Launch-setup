@@ -3,12 +3,12 @@
 
 #create database subnet groups
 #this command is enough to excuted once 
-aws rds create-db-subnet-group --db-subnet-group-name itmo444 --db-subnet-group-description "group for mp1" --subnet-ids subnet-7f4e4708 subnet-afa282f6
+#aws rds create-db-subnet-group --db-subnet-group-name itmo444 --db-subnet-group-description "group for mp1" --subnet-ids subnet-7f4e4708 subnet-afa282f6
 
-aws rds create-db-instance --db-name malhouradb --db-instance-identifier malhoura-mp1 --db-instance-class db.t2.micro --engine MySQL --master-username malhoura --master-user-password malhoura --allocated-storage 10 --vpc-security-group-ids sg-37695650 --db-subnet-group-name itmo444 --publicly-accessible
+#aws rds create-db-instance --db-name malhouradb --db-instance-identifier malhoura-mp1 --db-instance-class db.t2.micro --engine MySQL --master-username malhoura --master-user-password malhoura --allocated-storage 10 --vpc-security-group-ids sg-37695650 --db-subnet-group-name itmo444 --publicly-accessible
 
-aws rds wait db-instance-available --db-instance-identifier malhoura-mp1
-echo "Successfully launched RDS instance!"
+#aws rds wait db-instance-available --db-instance-identifier malhoura-mp1
+#echo "Successfully launched RDS instance!"
 
 
 #declaring an array in bash
@@ -46,7 +46,7 @@ aws elb create-lb-cookie-stickiness-policy --load-balancer-name mazen-lb --polic
 aws elb set-load-balancer-policies-of-listener --load-balancer-name mazen-lb --load-balancer-port 80 --policy-names stickypolicy
 
 #launch configuration
-aws autoscaling create-launch-configuration --launch-configuration-name malhoura-launch-config --image-id $1 --key-name $4 --security-groups $5 --instance-type $3 --user-data https://raw.githubusercontent.com/Malhoura/itmo-544-444-Environment-setup/master/install-webserver.sh --iam-instance-profile $7 
+aws autoscaling create-launch-configuration --launch-configuration-name malhoura-launch-config --image-id $1 --key-name $4 --security-groups $5 --instance-type $3 --user-data https://raw.githubusercontent.com/Malhoura/itmo-544-444-Launch-setup/master/install-webserver.sh --iam-instance-profile $7 
 
 
 #cloud watch matrix
