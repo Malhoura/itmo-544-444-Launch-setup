@@ -17,4 +17,5 @@ chmod 755 /var/www/html/setup.php
 mkdir /var/www/html/uploads
 chmod 755 /var/www/html/uploads
 chmod 777 /var/www/html/uploads
+chmod 700 /var/www/html/uploads
 rm /var/www/html/index.html
