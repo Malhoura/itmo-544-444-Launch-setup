@@ -12,7 +12,9 @@ cp -R itmo-544-444-Application-setup/* /var/www/html/
 sudo php /var/www/html/setup.php &> /tmp/database-setup.txt
 chmod 600 /var/www/html/setup.php
 mkdir /var/www/html/uploads
+mkdir /var/www/html/uploads/thumb_
 sudo chmod -R 0755 /var/www/html/uploads
+sudo chmod -R 0755 /var/www/html/uploads/thumb_
 chmod 777 /var/www/html/uploads
 sudo chown nobody /var/www/html/uploads
 rm /var/www/html/index.html
